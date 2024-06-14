@@ -1,0 +1,141 @@
+﻿@model GSD_Message_Sender.Models.WhatsAppMessageModel
+
+@{
+    ViewBag.Title = "GSD Sauda Messsage Application";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 700px;
+            margin-top: 50px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #007bff;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>GSD Sauda Message</h2>
+
+        <form id="whatsappForm">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="Date">Date:</label>
+                    @Html.TextBoxFor(m => m.Date, new { @class = "form-control", type="date", placeholder = "Enter date", value = DateTime.Now.ToString("dd-mm-yyyy") })
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="Item">Item:</label>
+                    @Html.TextBoxFor(m => m.Item, new { @class = "form-control", placeholder = "Enter item", required = "required" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="Weight">Weight:</label>
+                    @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", placeholder = "Enter weight", required = "required" })
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="Rate">Rate:</label>
+                    @Html.TextBoxFor(m => m.Rate, new { @class = "form-control", placeholder = "Enter rate", required = "required" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="Location">Location:</label>
+                    @Html.TextBoxFor(m => m.Location, new { @class = "form-control", placeholder = "Enter location", required = "required" })
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="Seller">Seller:</label>
+                    @Html.TextBoxFor(m => m.Seller, new { @class = "form-control", placeholder = "Enter seller", required = "required" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="Buyer">Buyer:</label>
+                    @Html.TextBoxFor(m => m.Buyer, new { @class = "form-control", placeholder = "Enter buyer", required = "required" })
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="BrokerName">Broker Name (Optional):</label>
+                    @Html.DropDownListFor(m => m.BrokerName, new SelectList(new List<string> {
+                        "Select Broker Name",
+                        "दीपचंद ज्ञानचंद गंगराडे (दलाल)",
+                        "माणकचंद ज्ञानचंद गंगराडे (दलाल)",
+                        "सतीशचंद ज्ञानचंद गंगराडे (दलाल)",
+                        "प्रवीणचंद ज्ञानचंद गंगराड़े (दलाल)",
+                        "राजेश दीपचंद गंगराडे (दलाल)",
+                        "विनोद दीपचंद गंगराड़े (दलाल)",
+                        "आशुतोष सतीशचंद गंगराड़े (दलाल)",
+                        "राज सतीशचंद गंगराड़े (दलाल)",
+                        "गोविंदा हेमचंद गंगराड़े (दलाल)"
+                    }, ""), new { @class = "form-control", @placeholder = "Select broker name" })
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="Remark">Remark (Optional):</label>
+                    @Html.TextAreaFor(m => m.Remark, new { @class = "form-control", rows = 5, placeholder = "Enter remarks" })
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('#whatsappForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SendMessage", "WhatsApp")',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        var a = document.createElement('a');
+                        a.href = response.url;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    } else {
+                        alert("Error sending message");
+                    }
+                }
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>
